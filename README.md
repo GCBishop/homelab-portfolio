@@ -3,6 +3,9 @@
 > **Overview**
 > Production-grade, multi-site infrastructure built and maintained as a self-directed engineering project. This environment documents a zero-trust architecture spanning bare-metal virtualization, container orchestration, split-horizon DNS, and self-hosted AI data pipelines.
 
+<img width="1865" height="917" alt="PVE_Dashboard" src="https://github.com/user-attachments/assets/9a9073f2-16f0-4efb-9fda-13663989dc9e" />
+
+
 ---
 
 ## 🖥️ Hardware & Storage Architecture
