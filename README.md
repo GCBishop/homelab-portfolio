@@ -59,3 +59,17 @@
 
 * **Service Desk:** `osTicket` deployed via Docker to provide an ITIL-aligned framework for incident tracking and change management.
 * **Disaster Recovery Simulation:** The system is utilized to track and resolve simulated data center degradation, including array rebuilds, network partition events, container instability, and backup verification failures. Each ticket formally documents categorization, root-cause isolation, and resolution steps.
+
+---
+
+## 📸 Screenshots
+
+<img width="1211" height="911" alt="AdGuard1" src="https://github.com/user-attachments/assets/0c4a2f54-117e-4c03-9669-51386cca7b66" /> <img width="1219" height="903" alt="AdGuard2" src="https://github.com/user-attachments/assets/43862607-6360-4b53-b3fd-e4eb5b6fa964" />
+
+<img width="2071" height="150" alt="DockerPS" src="https://github.com/user-attachments/assets/55b8ade9-ff18-4107-bd3b-92267ebb47ae" /> <img width="1155" height="552" alt="TailscaleManagement" src="https://github.com/user-attachments/assets/750e1726-f6f9-4a1f-b0d7-6c660a1fe8da" />
+
+<img width="1856" height="942" alt="UpTimeKuma" src="https://github.com/user-attachments/assets/017d27ca-d58a-4e8b-b340-dda5aa3f1fb3" />
+
+
+
+
