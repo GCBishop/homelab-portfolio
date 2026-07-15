@@ -1,45 +1,58 @@
-# Homelab Infrastructure Portfolio
+# 🌐 Homelab & Hybrid Cloud Infrastructure Portfolio
 
-Production-grade multi-site server and network infrastructure built and maintained as a self-directed learning project. This repository documents the architecture, configuration, and operational practices for a homelab environment spanning virtualization, container orchestration, zero-trust networking, and automated monitoring.
+> **Overview**
+> Production-grade, multi-site infrastructure built and maintained as a self-directed engineering project. This environment documents a zero-trust architecture spanning bare-metal virtualization, container orchestration, split-horizon DNS, and self-hosted AI data pipelines.
 
-## Hardware
-- **Primary Host:** AMD Ryzen 9 5950X (16C/32T), 128GB RAM
-- **GPU:** AMD RX 7900 XT 20GB (passed through to VM)
-- **OS Storage:** Mirrored NVMe SSDs
-- **Bulk Storage:** RAIDZ1 HDD pool
-- **Hypervisor:** Proxmox VE (Debian-based)
-- **Remote VPS:** IONOS VPS (Debian) - Cloud services and backup target
+---
 
-## Architecture Overview
+## 🖥️ Hardware & Storage Architecture
 
-### Server and Storage Layer
-- Custom server build with AMD Ryzen 9 5950X
-- Proxmox VE hypervisor with LXC containers and KVM/QEMU VMs
-- Tiered ZFS storage: mirrored NVMe (OS), RAIDZ1 HDD (bulk), scratch pool (transient)
-- GPU passthrough via IOMMU group isolation for AI/ML workloads
+* **Primary Compute Node:** AMD Ryzen 9 5950X (16C/32T) | 32GB DDR4 RAM
+* **AI/ML Accelerator:** AMD Radeon RX 7900 XT 20GB
+* *Implementation:* Strictly isolated via IOMMU for exclusive VM PCIe passthrough; host drivers blacklisted at the kernel level.
 
-### Network Layer
-- Zero-trust Tailscale mesh network spanning two geographic sites
-- Subnet routing and exit node configuration
-- No administrative interfaces exposed to public internet
-- All remote access via WireGuard/Tailscale VPN only
 
-### Container & Automation Layer
-- Docker + Docker Compose for service orchestration (Nginx Proxy Manager, Uptime Kuma, n8n, osTicket, Open WebUI)
-- Inter-container networking with persistent storage
-- Security hardening: capability dropping, socket proxying
-- Automated backup protocol via systemd timers with webhook heartbeat verification to Uptime Kuma
+* **Hypervisor:** Proxmox VE operating isolated LXC and KVM/QEMU workloads.
+* **Tiered ZFS Storage Array:**
+* **Tier 1 (OS/VMs):** Mirrored NVMe SSDs (High IOPS).
+* **Tier 2 (Scratch):** Single NVMe vDev (Transient data/caching).
+* **Tier 3 (Bulk):** RAIDZ1 HDD Array (Media and backups).
+* *Optimization:* ZFS ARC rigidly hard-capped at 4.0 GiB to prevent hypervisor OOM conditions and guarantee stable memory allocation for AI and Windows virtual machines.
 
-## Incident Management
-- Deployed osTicket (Docker) for ITIL-style ticketing and incident tracking
-- Created sample tickets simulating real data center scenarios: disk failures, network outages, container instability, and backup verification failures
-- Each ticket includes categorization, prioritization, troubleshooting steps, and resolution documentation
 
-## Skills Demonstrated
-- Server hardware assembly and component installation
-- Storage architecture (ZFS, RAID, tiered storage)
-- Network architecture (VLANs, subnet routing, VPN mesh, DNS design)
-- Linux administration (Ubuntu Server, Debian, Bash)
-- Container orchestration (Docker, Docker Compose)
-- Monitoring, alerting, and incident response (Uptime Kuma, SNMP, osTicket)
-- Automation and scripting (systemd, n8n, Python, Bash)
+
+---
+
+## 🔒 Network Topology & Zero-Trust Security
+
+* **Cryptographic Mesh Routing:** Cross-site connectivity (Home Lab to Cloud VPS) powered by Tailscale. All administrative SSH access (password authentication disabled) is restricted exclusively to the mesh subnet or emergency hardware firewall whitelists.
+* **Split-Horizon DNS:** Engineered a resilient, dual-node AdGuard Home infrastructure.
+* Local clients route through the primary sinkhole.
+* Roaming clients utilize the VPS as a full-tunnel exit node.
+* Wildcard rewrite rules ensure seamless internal domain proxy resolution regardless of geographic location.
+
+
+* **Container Hardening:** Telemetry and proxy services strictly enforce the principle of least privilege. Docker sockets are proxied via HAProxy (restricting traffic to `CONTAINERS=1`, `POST=0`) and locked at the kernel level utilizing `cap_drop: ALL` and `no-new-privileges:true`.
+
+---
+
+## 🧠 AI Infrastructure & Data Pipelines
+
+* **Local Inference Engine:** Dedicated Ubuntu Server VM serving Ollama API endpoints. Configured with persistent VRAM caching to eliminate cold-start latency for Large Language Models (e.g., Qwen 27B parameters).
+* **Map-Reduce Automation:** Production `n8n` workflows deployed for automated RSS ingestion, vectorized data sanitization, LLM-driven summarization, and chunked webhook payload delivery.
+* **Distributed Frontends:** WebUI deployed locally for administrative access, while secondary chat frontends operate remotely on the VPS, securely querying the local GPU engine entirely over the encrypted mesh network.
+
+---
+
+## 🐳 Container Orchestration & Fleet Management
+
+* **Centralized Orchestration:** `Dockge` utilized as the primary stack manager for Docker Compose deployments across nodes.
+* **Edge Routing:** Nginx Proxy Manager serves as the domain gateway, orchestrating SSL termination for internal services.
+* **Automated Resilience:** Custom `systemd` timers execute weekly automated backup protocols on the VPS—safely halting engines, generating SQLite tarballs, pulling image updates, and pushing heartbeat telemetry to Uptime Kuma upon successful completion.
+
+---
+
+## 🎫 ITSM & Incident Management
+
+* **Service Desk:** `osTicket` deployed via Docker to provide an ITIL-aligned framework for incident tracking and change management.
+* **Disaster Recovery Simulation:** The system is utilized to track and resolve simulated data center degradation, including array rebuilds, network partition events, container instability, and backup verification failures. Each ticket formally documents categorization, root-cause isolation, and resolution steps.
